@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <script src="IndexedDB.js"></script>
+    <script>
+        async function testIndexedDB() {
+            try {
+                // Test openDB
+                const dbName = "TestDB";
+                const db = await openDB(dbName);
+                console.log("openDB test passed");
+
+                // Test addData
+                const storeName = "singleChat";
+                let data = { sequenceId: 1, link: "http://example.com", messageType: "text" };
+                await addData(db, storeName, data);
+                data = { sequenceId: 2, link: "http://example2.com", messageType: "email" };
+                await addData(db, storeName, data);
+
+                data = { sequenceId: 3, link: "http://example3.com", messageType: "chat" };
+                await addData(db, storeName, data);
+
+                data = { sequenceId: 4, link: "http://example4.com", messageType: "text" };
+                await addData(db, storeName, data);
+                console.log("addData test passed");
+
+                // Test getDataByKey
+                const retrievedDataByKey = await getDataByKey(db, storeName, 1);
+                console.log("getDataByKey test passed", retrievedDataByKey);
+
+                // Test getDataByIndex
+                const retrievedDataByIndex = await getDataByIndex(db, storeName, "sequenceId", 1);
+                console.log("getDataByIndex test passed", retrievedDataByIndex);
+
+                // Test getAllData
+                const allData = await getAllData(db, storeName);
+                console.log("getAllData test passed", allData);
+
+                // Test cursorGetDataByIndex
+                const cursorDataByIndex = await cursorGetDataByIndex(db, storeName, "messageType", "text");
+                console.log("cursorGetDataByIndex test passed", cursorDataByIndex);
+
+                // Test cursorGetDataByIndexAndPage
+                const cursorDataByIndexAndPage = await cursorGetDataByIndexAndPage(db, storeName, "messageType", "text", 1, 1);
+                console.log("cursorGetDataByIndexAndPage test passed", cursorDataByIndexAndPage);
+
+            } catch (error) {
+                console.error("Test failed", error);
+            }
+        }
+
+        // Run the tests
+        // testIndexedDB();
+    </script>
+</body>
+
+</html>
